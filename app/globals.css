@@ -6,6 +6,7 @@
   --foreground-rgb: 0, 0, 0;
   --background-start-rgb: 214, 219, 220;
   --background-end-rgb: 255, 255, 255;
+
 }
 
 @media (prefers-color-scheme: dark) {
@@ -18,16 +19,68 @@
 
 body {
   color: rgb(var(--foreground-rgb));
-  background: linear-gradient(
-      to bottom,
-      transparent,
-      rgb(var(--background-end-rgb))
-    )
-    rgb(var(--background-start-rgb));
+  background: rgb(232, 223, 202);
 }
 
 @layer utilities {
   .text-balance {
     text-wrap: balance;
   }
+}
+
+.text-green {
+  opacity: 1;
+  color: rgba(26, 77, 46, 1);
+  font-family: "SFCompactRounded-Semibold";
+  font-style: Semibold;
+  letter-spacing: 0px;
+}
+
+.text-white {
+  opacity: 1;
+  color: rgba(255, 255, 255, 1);
+  font-family: "SFCompactRounded-Semibold";
+  font-weight: 600;
+  font-style: Semibold;
+  letter-spacing: 0px;
+}
+
+.white-input {
+  border-radius: 10px;
+  opacity: 1;
+  background-color: rgba(245, 239, 230, 1);
+  font: rgba(26, 77, 46, 0.5);
+  font-family: "SFCompactRounded-Semibold";
+  font-weight: 600;
+  font-style: Semibold;
+  letter-spacing: 0px;
+  text-align: left;
+}
+
+.text-lightgreen {
+  opacity: 1;
+  color: rgba(26, 77, 46, 0.5);
+  font-family: "SFCompactRounded-Semibold";
+  font-weight: 600;
+  font-style: Semibold;
+  letter-spacing: 0px;
+  text-align: left;
+}
+
+.green-button {
+  border-radius: 10px;
+  border: 2px solid rgba(26, 77, 46, 1);
+  opacity: 1;
+}
+
+.green-small-button {
+  border-radius: 7px;
+  border: 2px solid rgba(26, 77, 46, 1);
+  opacity: 1;
+}
+
+.white-panel {
+  border-radius: 24px 24px 0px 0px;
+  opacity: 1;
+  background-color: rgba(255, 255, 255, 1);
 }
