@@ -19,13 +19,17 @@
 
 body {
   color: rgb(var(--foreground-rgb));
-  background: rgb(232, 223, 202);
+  background: rgb(0, 0, 0);
 }
 
 @layer utilities {
   .text-balance {
     text-wrap: balance;
   }
+}
+
+.background-color {
+  background: rgb(232, 223, 202);
 }
 
 .text-green {
@@ -46,7 +50,6 @@ body {
 }
 
 .white-input {
-  border-radius: 10px;
   opacity: 1;
   background-color: rgba(245, 239, 230, 1);
   font: rgba(26, 77, 46, 0.5);
@@ -68,7 +71,6 @@ body {
 }
 
 .green-button {
-  border-radius: 10px;
   border: 2px solid rgba(26, 77, 46, 1);
   opacity: 1;
 }

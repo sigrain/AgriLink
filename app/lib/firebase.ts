@@ -1,7 +1,10 @@
 
-import { getApp, getApps, initializeApp } from 'firebase/app'
-import { sendEmailVerification, getAuth, createUserWithEmailAndPassword, User, signInWithEmailAndPassword } from 'firebase/auth'
+import { getApp, getApps, initializeApp, FirebaseApp } from 'firebase/app'
+import { sendEmailVerification, Auth, getAuth, createUserWithEmailAndPassword, User, signInWithEmailAndPassword } from 'firebase/auth'
 import { FirebaseError } from 'firebase/app';
+import { getFirestore, getDocs, setDoc, addDoc, collection, query, where, doc, Firestore } from 'firebase/firestore';
+import firebase from "firebase/compat/app";
+import 'firebase/compat/firestore';
 
 
 // Firebase configuration
@@ -17,17 +20,21 @@ const firebaseConfig = {
 
 // Initialize Firebase
 const app = initializeApp(firebaseConfig);
+const db = getFirestore(app);
 
-export const initializeFirebaseApp = () =>
-    !getApps().length ? initializeApp(firebaseConfig) : getApp()
-
-
+let firebaseApp: FirebaseApp;
+let auth: Auth;
+let firestore: Firestore;
 let user: User | null = null;
 
-export const signup = async(email: string, password: string) => {
+firestore = getFirestore();
+
+export const signup = async(name: string, email: string, password: string) => {
     try {
         const auth = getAuth()
-        await createUserWithEmailAndPassword(auth, email, password);
+        let userCredntial = await createUserWithEmailAndPassword(auth, email, password);
+        user = userCredntial.user;
+        await addUser(name, email);
     } catch(e) {
         return e;
     }
@@ -42,4 +49,46 @@ export const signin = async(email: string, password: string) => {
     } catch(e) {
         return e;
     }
+}
+
+export { firebaseApp, auth, firestore, user };
+
+export const addUser = async(name: string, email: string) => {
+    const docData = {
+        name: name,
+        email: email,
+        uid: user?.uid
+    }
+    const userRef = collection(db, "users");
+    await addDoc(userRef, docData);
+}
+
+export const addPlants = async() => {
+    const docData = {
+        name: "My Coffee",
+        species: "Coffee Tree",
+        location: "San-Paulo Brazil",
+        days: "135 days",
+        username: "Rain"
+    }
+
+    const plantsRef = collection(db, "plants");
+    await addDoc(plantsRef, docData);
+}
+
+export const getPlants = async (path: string) => {
+    const subjectsArray: any = [];
+    const col = collection(db, "plants");
+    await getDocs(query(col, where("username", "==", "Rain"))).then((snapshot) => {
+        snapshot.docs.map((doc) => {
+            subjectsArray.push({
+                name: doc.data().name,
+                species: doc.data().species,
+                location: doc.data().location,
+                days: doc.data().days,
+                username: doc.data().username
+            })
+        })
+    })
+    return subjectsArray;
 }
