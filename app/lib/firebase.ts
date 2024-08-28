@@ -27,6 +27,8 @@ let auth: Auth;
 let firestore: Firestore;
 let user: User | null = null;
 
+let username: String;
+
 firestore = getFirestore();
 
 export const signup = async(name: string, email: string, password: string) => {
@@ -59,17 +61,18 @@ export const addUser = async(name: string, email: string) => {
         email: email,
         uid: user?.uid
     }
+    username = name;
     const userRef = collection(db, "users");
     await addDoc(userRef, docData);
 }
 
-export const addPlants = async() => {
+export const addPlants = async(name: string, species: string, location: string, days: string) => {
     const docData = {
-        name: "My Coffee",
-        species: "Coffee Tree",
-        location: "San-Paulo Brazil",
-        days: "135 days",
-        username: "Rain"
+        name: name,
+        species: species,
+        location: location,
+        days: days,
+        username: username
     }
 
     const plantsRef = collection(db, "plants");

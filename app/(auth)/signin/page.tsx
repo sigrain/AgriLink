@@ -27,11 +27,11 @@ export default function SignUp() {
     <main className='w-[390px] ml-auto mr-auto background-color'>
       <div className="ml-7 mr-7 flex flex-col justify-between h-screen">
         <div className="flex flex-col items-left justify-center flex-grow">
-        <h1 className="text-green text-4xl text-left">AgriLink</h1>
-        <h2 className="mt-5 text-green text-base text-left">Grow your own plants</h2>
-        <h2 className="text-green text-base text-left">from anywhere in the world</h2>
-            <input className='mt-24 white-input rounded-lg w-full h-10 pl-7' placeholder='Email' ref={emailRef}/>
-            <input className='mt-4 white-input rounded-lg w-full h-10 pl-7' placeholder='Password' ref={passwordRef}/>
+          <h1 className="text-green text-4xl text-left">AgriLink</h1>
+          <h2 className="mt-5 text-green text-base text-left">Grow your own plants</h2>
+          <h2 className="text-green text-base text-left">from anywhere in the world</h2>
+          <input className='mt-24 white-input rounded-lg w-full h-10 pl-7' placeholder='Email' ref={emailRef}/>
+          <input className='mt-4 white-input rounded-lg w-full h-10 pl-7' placeholder='Password' ref={passwordRef}/>
         </div>
 
         <div className="justify-center mt-auto mb-8">
