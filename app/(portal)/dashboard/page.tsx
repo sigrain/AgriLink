@@ -16,17 +16,20 @@ export default function Dashboard() {
     const [cameraStatus, setCameraStatus] = useState("stop")
     const [pumpStatus, setPumpStatus] = useState("stop")
     const [motorStatus, setMotorStatus] = useState("stop")
-    const trigger = async (type: "camera" | "pump" | "motor", action: string) => {
+    const trigger = async (type: "camera" | "pump" | "motor", action: string, direction?: "forward" | "backward") => {
+        let body;
+        if (type == "motor") {
+            body = JSON.stringify({ action, direction })
+        } else {
+            body = JSON.stringify({ action })
+        }
         const res = await fetch(`${apiBase}/${type}`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ action }),
+        body: body,
         });
         const data = await res.json();
         setStatus(`${type}: ${data.status || data.error}`);
-        if (type == "camera") {
-            setCameraStatus(action);
-        }
         switch (type) {
             case "camera":
                 setCameraStatus(action);
@@ -74,13 +77,25 @@ export default function Dashboard() {
                 <div className="flex justify-start space-x-4 p-7">
                     {pumpStatus == "stop" && (<button className='green-button rounded-md h-10 w-10' onClick={() => trigger("pump", "start")}>&#128167;</button>)}
                     {pumpStatus == "start" && (<button className='green-button rounded-md h-10 w-10' onClick={() => trigger("pump", "stop")}>&#10060;</button>)}
-                    {motorStatus == "stop" && (<button className='green-button rounded-md h-10 w-10' onClick={() => trigger("pump", "start")}>&#128663;</button>)}
-                    {motorStatus == "start" && (<button className='green-button rounded-md h-10 w-10'onClick={() => trigger("pump", "stop")}>&#10060;</button>)}
                     <button className='green-button rounded-md h-10 w-10'>&#128712;</button>
                 </div>
                 <div className="bg-gray-200 rounded-xl h-96 flex items-center justify-center mb-7 mx-7">
+                    <button
+                        onMouseDown={() => trigger("motor", "start", "backward")}
+                        onMouseUp={() => trigger("motor", "stop", "backward")}
+                        className="green-button rounded-full w-10 h-10 mt-auto mb-7 mr-3"
+                    >
+                        ⏪
+                    </button>
                     {cameraStatus == "stop" && (<button className='green-button rounded-full w-14 h-14 mt-auto mb-5' onClick={() => trigger("camera", "start")}><p className='text-green text-xl'>&#128247;</p></button>)}
                     {cameraStatus == "start" && (<button className='green-button rounded-full w-14 h-14 mt-auto mb-5' onClick={() => trigger("camera", "stop")}><p className='text-green text-xl'>&#10060;</p></button>)}
+                    <button
+                        onMouseDown={() => trigger("motor", "start", "forward")}
+                        onMouseUp={() => trigger("motor", "stop", "forward")}
+                        className="green-button rounded-full w-10 h-10 mt-auto mb-7 ml-3"
+                    >
+                        ⏩
+                    </button>
                 </div>
                 {Array.isArray(subjects) && subjects.length > 0 &&
                     (
