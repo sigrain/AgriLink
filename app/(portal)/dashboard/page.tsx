@@ -3,12 +3,39 @@ import { useState, useEffect } from "react";
 import { addPlants, getPlants } from "@/app/lib/firebase";
 import { useRouter } from "next/navigation";
 
+const apiBase = "http://<pi-local-ip>:5000"; // Pi のローカルIP
+
 export default function Dashboard() {
 
     const router = useRouter();
 
     const [subjects, setSubjects] = useState<any>([]);
     const [index, setIndex] = useState<number>(0);
+
+    const [status, setStatus] = useState("");
+    const [cameraStatus, setCameraStatus] = useState("stop")
+    const [pumpStatus, setPumpStatus] = useState("stop")
+    const [motorStatus, setMotorStatus] = useState("stop")
+    const trigger = async (type: "camera" | "pump" | "motor", action: string) => {
+        const res = await fetch(`${apiBase}/${type}`, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ action }),
+        });
+        const data = await res.json();
+        setStatus(`${type}: ${data.status || data.error}`);
+        if (type == "camera") {
+            setCameraStatus(action);
+        }
+        switch (type) {
+            case "camera":
+                setCameraStatus(action);
+            case "pump":
+                setPumpStatus(action);
+            case "motor":
+                setMotorStatus(action);
+        }
+    };
 
     const fetchSubjects = async() => {
         const path = `plants`;
@@ -45,12 +72,15 @@ export default function Dashboard() {
             <div className="white-panel w-full h-screen">
                 <div className='h-full'>
                 <div className="flex justify-start space-x-4 p-7">
-                    <button className='green-button rounded-md h-10 w-10'>&#128167;</button>
-                    <button className='green-button rounded-md h-10 w-10'>&#128247;</button>
+                    {pumpStatus == "stop" && (<button className='green-button rounded-md h-10 w-10' onClick={() => trigger("pump", "start")}>&#128167;</button>)}
+                    {pumpStatus == "start" && (<button className='green-button rounded-md h-10 w-10' onClick={() => trigger("pump", "stop")}>&#10060;</button>)}
+                    {motorStatus == "stop" && (<button className='green-button rounded-md h-10 w-10' onClick={() => trigger("pump", "start")}>&#128663;</button>)}
+                    {motorStatus == "start" && (<button className='green-button rounded-md h-10 w-10'onClick={() => trigger("pump", "stop")}>&#10060;</button>)}
                     <button className='green-button rounded-md h-10 w-10'>&#128712;</button>
                 </div>
                 <div className="bg-gray-200 rounded-xl h-96 flex items-center justify-center mb-7 mx-7">
-                    <button className='green-button rounded-full w-14 h-14 mt-auto mb-5'><p className='text-green text-xl'>&#128247;</p></button>
+                    {cameraStatus == "stop" && (<button className='green-button rounded-full w-14 h-14 mt-auto mb-5' onClick={() => trigger("camera", "start")}><p className='text-green text-xl'>&#128247;</p></button>)}
+                    {cameraStatus == "start" && (<button className='green-button rounded-full w-14 h-14 mt-auto mb-5' onClick={() => trigger("camera", "stop")}><p className='text-green text-xl'>&#10060;</p></button>)}
                 </div>
                 {Array.isArray(subjects) && subjects.length > 0 &&
                     (
